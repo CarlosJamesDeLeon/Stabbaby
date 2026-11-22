@@ -1,14 +1,24 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 const PORT = 3000;
+const JAVA_API_URL = process.env.JAVA_API_URL || "http://localhost:8080";
 
 const localBlockedDates: Array<{ id?: string; date: string; reason?: string }> = [];
-const localBookings: Array<Record<string, any>> = [];
+
 
 async function startServer() {
   const app = express();
+
+  app.use(
+    createProxyMiddleware({
+      target: JAVA_API_URL,
+      changeOrigin: true,
+      pathFilter: "/api/bookings",
+    })
+  );
   
   app.use(express.json());
 
@@ -16,23 +26,6 @@ async function startServer() {
     res.json(localBlockedDates);
   });
 
-  app.post("/api/bookings", (req, res) => {
-    try {
-      const bookingData = {
-        ...req.body,
-        id: `book_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-        created_at: new Date().toISOString()
-      };
-      
-      localBookings.push(bookingData);
-      console.log(`[Booking] Stored appointment for ${bookingData.full_name || 'Client'} (${bookingData.preferred_date || 'TBD'})`);
-
-      res.json({ success: true, data: [bookingData] });
-    } catch (err) {
-      console.error("Error creating booking:", err);
-      res.status(500).json({ error: "Failed to create booking" });
-    }
-  });
 
   app.post("/api/contact", async (req, res) => {
     try {
