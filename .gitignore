@@ -8,3 +8,4 @@ coverage/
 !.env.example
 backend-java/target/
 .aistudio/
+backend-java/application-local.properties

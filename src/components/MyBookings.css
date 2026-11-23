@@ -1,0 +1,112 @@
+.my-booking {
+  padding: 6rem 1.5rem;
+}
+
+.my-booking-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.my-booking-form {
+  background: var(--bg-card);
+  border: 1px solid var(--outline);
+  border-radius: var(--radius-card);
+  padding: 2rem;
+  margin: 2rem 0;
+}
+
+.lookup-error {
+  margin-top: 1rem;
+  color: var(--pink-main);
+}
+
+.booking-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.booking-list-empty {
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.booking-card {
+  background: var(--bg-card);
+  border: 1px solid var(--outline);
+  border-radius: var(--radius-card);
+  padding: 1.5rem;
+  color: var(--text-main);
+}
+
+.booking-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.booking-card-code {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: 0.1em;
+  color: var(--pink-main);
+}
+
+.booking-card-line {
+  margin: 0.25rem 0;
+}
+
+.booking-card-notes {
+  margin: 0.5rem 0 0;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.status-badge {
+  padding: 0.2rem 0.8rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  border: 1px solid currentColor;
+}
+
+.status-pending { color: var(--cyan-pop); }
+.status-confirmed { color: var(--pink-main); }
+.status-completed { color: var(--text-main); }
+.status-cancelled { color: var(--text-muted); }
+
+.cancel-link,
+.cancel-yes,
+.cancel-no {
+  margin-top: 1rem;
+  background: transparent;
+  border: 1px solid var(--outline);
+  color: var(--text-main);
+  border-radius: var(--radius-pill);
+  padding: 0.4rem 1.1rem;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+
+.cancel-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancel-yes {
+  border-color: var(--pink-main);
+  color: var(--pink-main);
+}
+
+.cancel-confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.cancel-confirm .cancel-yes,
+.cancel-confirm .cancel-no {
+  margin-top: 0;
+}

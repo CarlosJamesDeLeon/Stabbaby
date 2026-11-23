@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { STUDIO_HOURS, TIME_SLOTS, PIERCING_OPTIONS } from '../data/studioData';
 import { studioApi } from '../services/api';
+import { bookingApi, ApiError } from '../services/bookingApi';
+import { BookingResponse } from '../types/booking';
+import { BookingConfirmation } from './BookingConfirmation';
 
 interface BookingSectionProps {
   selectedCategory: string;
@@ -23,6 +26,7 @@ export const BookingSection: React.FC<BookingSectionProps> = ({
   const [piercingType, setPiercingType] = useState(selectedCategory || '');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [confirmation, setConfirmation] = useState<BookingResponse | null>(null);
 
   const [blockedDates, setBlockedDates] = useState<string[]>([]);
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -103,16 +107,17 @@ export const BookingSection: React.FC<BookingSectionProps> = ({
     }
 
     setIsSubmitting(true);
-    try {
-      await studioApi.createBooking({
-        full_name: fullName,
-        contact_number: contactNumber,
-        preferred_date: formattedDateValue,
-        preferred_time: prefTime,
-        piercing_type: piercingType,
-        message: notes,
+      try {
+      const booking = await bookingApi.createBooking({
+        fullName: fullName.trim(),
+        contactNumber: contactNumber.trim(),
+        preferredDate: formattedDateValue,
+        preferredTime: prefTime,
+        piercingType,
+        notes: notes.trim() || undefined,
       });
 
+      setConfirmation(booking);
       onShowToast(true);
       setFullName('');
       setContactNumber('');
@@ -120,8 +125,15 @@ export const BookingSection: React.FC<BookingSectionProps> = ({
       setPiercingType('');
       setNotes('');
       setSelectedDate(null);
-    } catch {
-      onShowToast(false, 'Something went wrong babe, please try again or contact us directly ✦');
+    } catch (err) {
+      if (err instanceof ApiError) {
+        const firstFieldError = err.fieldErrors
+          ? Object.values(err.fieldErrors)[0]
+          : undefined;
+        onShowToast(false, firstFieldError ?? err.message);
+      } else {
+        onShowToast(false);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -154,6 +166,13 @@ export const BookingSection: React.FC<BookingSectionProps> = ({
 
         <div className="booking-form-wrapper fade-up delay-1">
           <div className="glowing-border"></div>
+          
+           {confirmation ? (
+              <BookingConfirmation
+                booking={confirmation}
+                onBookAnother={() => setConfirmation(null)}
+              />
+            ) : (
           <form id="bookingForm" className="booking-form-dark" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="fullName">Full Name</label>
@@ -317,6 +336,7 @@ export const BookingSection: React.FC<BookingSectionProps> = ({
               {isSubmitting ? 'Booking...' : 'Book Now ✦'}
             </button>
           </form>
+            )}
         </div>
       </div>
     </section>

@@ -52,6 +52,7 @@ export const Navbar: React.FC = () => {
         <a href="#about" onClick={handleLinkClick}>About</a>
         <a href="#gallery" onClick={handleLinkClick}>Gallery</a>
         <a href="#services" onClick={handleLinkClick}>Services</a>
+        <a href="#my-booking" onClick={handleLinkClick}>My Booking</a>
         <a href="#location" className="nav-location" onClick={handleLinkClick}>
           <svg
             width="16"
