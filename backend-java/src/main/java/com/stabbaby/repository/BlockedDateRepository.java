@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface BlockedDateRepository extends JpaRepository<BlockedDate, Long> {
     Optional<BlockedDate> findByDate(String date);
+    boolean existsByDate(String date);
+    void deleteByDate(String date);
 }

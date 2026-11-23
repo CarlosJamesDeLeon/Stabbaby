@@ -1445,6 +1445,70 @@ select.form-control {
   box-shadow: 0 0 15px var(--pink-glow);
 }
 
+.calendar-day.blocked {
+  color: rgba(239, 68, 68, 0.45);
+  background: rgba(239, 68, 68, 0.08);
+  text-decoration: line-through;
+}
+
+.calendar-day.fully-booked {
+  color: rgba(245, 158, 11, 0.55);
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.calendar-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.calendar-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.calendar-legend-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.calendar-legend-dot.dot-blocked {
+  background: #ef4444;
+}
+
+.calendar-legend-dot.dot-booked {
+  background: #f59e0b;
+}
+
+.walkin-notice {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--pink-light);
+  background: rgba(232, 106, 179, 0.08);
+  border: 1px solid rgba(232, 106, 179, 0.2);
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.walkin-notice .walkin-icon {
+  color: var(--pink-main);
+  font-size: 0.85rem;
+}
+
+
 /* ==========================================================================
    RESPONSIVE DESIGN & MOBILE OPTIMIZATIONS
    ========================================================================== */

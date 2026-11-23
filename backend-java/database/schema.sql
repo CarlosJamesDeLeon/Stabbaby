@@ -37,5 +37,11 @@ CREATE TABLE IF NOT EXISTS bookings (
   INDEX idx_booking_contact (contact_number)
 );
 
--- Note: the blocked_dates table (calendar module) is created automatically
--- by Spring Boot/Hibernate on first run (spring.jpa.hibernate.ddl-auto=update).
+-- 4. Blocked dates table (Calendar module)
+CREATE TABLE IF NOT EXISTS blocked_dates (
+  id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+  date        VARCHAR(10)  NOT NULL UNIQUE,
+  reason      VARCHAR(255) NULL,
+  created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_blocked_date (date)
+);

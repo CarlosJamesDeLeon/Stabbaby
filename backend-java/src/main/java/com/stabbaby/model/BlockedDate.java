@@ -2,6 +2,8 @@ package com.stabbaby.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "blocked_dates")
 public class BlockedDate {
@@ -10,10 +12,19 @@ public class BlockedDate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 10)
     private String date;
 
+    @Column(length = 255)
     private String reason;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     public BlockedDate() {}
 
@@ -44,5 +55,13 @@ public class BlockedDate {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

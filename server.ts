@@ -6,9 +6,6 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 const PORT = 3000;
 const JAVA_API_URL = process.env.JAVA_API_URL || "http://localhost:8080";
 
-const localBlockedDates: Array<{ id?: string; date: string; reason?: string }> = [];
-
-
 async function startServer() {
   const app = express();
 
@@ -16,15 +13,11 @@ async function startServer() {
     createProxyMiddleware({
       target: JAVA_API_URL,
       changeOrigin: true,
-      pathFilter: "/api/bookings",
+      pathFilter: ["/api/bookings", "/api/blocked-dates", "/api/calendar"],
     })
   );
   
   app.use(express.json());
-
-  app.get("/api/blocked-dates", (req, res) => {
-    res.json(localBlockedDates);
-  });
 
 
   app.post("/api/contact", async (req, res) => {

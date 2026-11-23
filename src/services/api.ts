@@ -1,4 +1,5 @@
 import { BookingPayload } from '../types';
+import { DayAvailabilityResponse, UnavailableDatesResponse } from '../types/calendar';
 
 export const studioApi = {
   async fetchBlockedDates(): Promise<string[]> {
@@ -24,6 +25,39 @@ export const studioApi = {
         .map((dStr: string) => dStr.substring(0, 10));
     } catch {
       return [];
+    }
+  },
+
+  async fetchUnavailableDates(): Promise<UnavailableDatesResponse> {
+    try {
+      const response = await fetch('/api/calendar/unavailable-dates');
+      if (!response.ok) {
+        const blocked = await this.fetchBlockedDates();
+        return {
+          unavailableDates: blocked,
+          blockedDates: blocked,
+          fullyBookedDates: [],
+          details: blocked.map((d) => ({ date: d, type: 'BLOCKED' })),
+        };
+      }
+      return await response.json();
+    } catch {
+      return {
+        unavailableDates: [],
+        blockedDates: [],
+        fullyBookedDates: [],
+        details: [],
+      };
+    }
+  },
+
+  async fetchDayAvailability(date: string): Promise<DayAvailabilityResponse | null> {
+    try {
+      const response = await fetch(`/api/calendar/availability?date=${encodeURIComponent(date)}`);
+      if (!response.ok) return null;
+      return await response.json();
+    } catch {
+      return null;
     }
   },
 
