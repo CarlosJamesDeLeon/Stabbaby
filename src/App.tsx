@@ -8,6 +8,7 @@ import { BookingSection } from './components/BookingSection';
 import { Contact } from './components/Contact';
 import { Location } from './components/Location';
 import { Footer } from './components/Footer';
+import { MyBookings } from './components/MyBookings';
 
 export const App: React.FC = () => {
   const [selectedBookingCategory, setSelectedBookingCategory] = useState<string>('');
@@ -96,6 +97,7 @@ export const App: React.FC = () => {
         onClearSelectedCategory={() => setSelectedBookingCategory('')}
         onShowToast={showToast}
       />
+      <MyBookings onShowToast={showToast} />
       <Location />
       <Contact onShowToast={showToast} />
       <Footer />
