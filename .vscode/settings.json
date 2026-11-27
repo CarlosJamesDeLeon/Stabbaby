@@ -1,0 +1,11 @@
+{
+    "java.jdt.ls.java.home": "C:\\Program Files\\Microsoft\\jdk-17.0.21.102-hotspot",
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-17",
+            "path": "C:\\Program Files\\Microsoft\\jdk-17.0.21.102-hotspot",
+            "default": true
+        }
+    ],
+    "maven.executable.path": "C:\\Users\\Nathaniel Lapig\\Maven\\apache-maven-3.9.6\\bin\\mvn.cmd"
+}

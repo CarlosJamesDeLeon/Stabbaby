@@ -13,15 +13,17 @@ const MONTH_NAMES = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-export const BookingSection: React.FC<BookingSectionProps> = ({
+export function BookingSection({
   selectedCategory,
   onShowToast,
-}) => {
-  const [fullName, setFullName] = useState('');
-  const [contactNumber, setContactNumber] = useState('');
-  const [prefTime, setPrefTime] = useState('');
-  const [piercingType, setPiercingType] = useState(selectedCategory || '');
-  const [notes, setNotes] = useState('');
+}: BookingSectionProps) {
+  const [form, setForm] = useState({
+    fullName: '',
+    contactNumber: '',
+    prefTime: '',
+    piercingType: selectedCategory || '',
+    notes: '',
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [blockedDates, setBlockedDates] = useState<string[]>([]);
@@ -40,7 +42,7 @@ export const BookingSection: React.FC<BookingSectionProps> = ({
 
   useEffect(() => {
     if (selectedCategory) {
-      setPiercingType(selectedCategory);
+      setForm((form) => ({ ...form, piercingType: selectedCategory }));
       if (piercingSelectRef.current) {
         piercingSelectRef.current.style.borderColor = 'var(--pink-main)';
         piercingSelectRef.current.style.boxShadow = '0 0 15px rgba(232, 107, 168, 0.4)';
@@ -72,20 +74,20 @@ export const BookingSection: React.FC<BookingSectionProps> = ({
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const prevMonth = () => {
+  function prevMonth() {
     setCurrentDate(new Date(year, month - 1, 1));
-  };
+  }
 
-  const nextMonth = () => {
+  function nextMonth() {
     setCurrentDate(new Date(year, month + 1, 1));
-  };
+  }
 
-  const handleSelectDay = (dayNum: number) => {
+  function handleSelectDay(dayNum: number) {
     const chosen = new Date(year, month, dayNum);
     chosen.setHours(0, 0, 0, 0);
     setSelectedDate(chosen);
     setCalendarOpen(false);
-  };
+  }
 
   const formattedDateValue = selectedDate
     ? `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
@@ -95,7 +97,11 @@ export const BookingSection: React.FC<BookingSectionProps> = ({
     ? `${MONTH_NAMES[selectedDate.getMonth()]} ${selectedDate.getDate()}, ${selectedDate.getFullYear()}`
     : '';
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  function handleFormChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!formattedDateValue) {
       onShowToast(false, 'Please pick your preferred date ✦');
@@ -105,27 +111,29 @@ export const BookingSection: React.FC<BookingSectionProps> = ({
     setIsSubmitting(true);
     try {
       await studioApi.createBooking({
-        full_name: fullName,
-        contact_number: contactNumber,
+        full_name: form.fullName,
+        contact_number: form.contactNumber,
         preferred_date: formattedDateValue,
-        preferred_time: prefTime,
-        piercing_type: piercingType,
-        message: notes,
+        preferred_time: form.prefTime,
+        piercing_type: form.piercingType,
+        message: form.notes,
       });
 
       onShowToast(true);
-      setFullName('');
-      setContactNumber('');
-      setPrefTime('');
-      setPiercingType('');
-      setNotes('');
+      setForm({
+        fullName: '',
+        contactNumber: '',
+        prefTime: '',
+        piercingType: '',
+        notes: '',
+      });
       setSelectedDate(null);
     } catch {
       onShowToast(false, 'Something went wrong babe, please try again or contact us directly ✦');
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }
 
   return (
     <section id="book" className="booking-cinematic section-dark">
@@ -137,8 +145,8 @@ export const BookingSection: React.FC<BookingSectionProps> = ({
           </h2>
 
           <div className="studio-hours">
-            {STUDIO_HOURS.map((hour, idx) => (
-              <div key={idx} className="hour-block">
+            {STUDIO_HOURS.map((hour) => (
+              <div key={hour.days} className="hour-block">
                 <div className="days">{hour.days}</div>
                 <div className="time">{hour.time}</div>
               </div>
@@ -160,11 +168,12 @@ export const BookingSection: React.FC<BookingSectionProps> = ({
               <input
                 type="text"
                 id="fullName"
+                name="fullName"
                 className="form-control"
                 required
                 placeholder="Babe Smith"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                value={form.fullName}
+                onChange={handleFormChange}
               />
             </div>
 
@@ -173,11 +182,12 @@ export const BookingSection: React.FC<BookingSectionProps> = ({
               <input
                 type="tel"
                 id="contactNumber"
+                name="contactNumber"
                 className="form-control"
                 required
                 placeholder="0912 345 6789"
-                value={contactNumber}
-                onChange={(e) => setContactNumber(e.target.value)}
+                value={form.contactNumber}
+                onChange={handleFormChange}
               />
             </div>
 
@@ -273,10 +283,11 @@ export const BookingSection: React.FC<BookingSectionProps> = ({
               <label htmlFor="prefTime">Preferred Time</label>
               <select
                 id="prefTime"
+                name="prefTime"
                 className="form-control"
                 required
-                value={prefTime}
-                onChange={(e) => setPrefTime(e.target.value)}
+                value={form.prefTime}
+                onChange={handleFormChange}
               >
                 <option value="" disabled>Select a time</option>
                 {TIME_SLOTS.map((time) => (
@@ -289,11 +300,12 @@ export const BookingSection: React.FC<BookingSectionProps> = ({
               <label htmlFor="piercingType">Piercing Type</label>
               <select
                 id="piercingType"
+                name="piercingType"
                 className="form-control"
                 required
                 ref={piercingSelectRef}
-                value={piercingType}
-                onChange={(e) => setPiercingType(e.target.value)}
+                value={form.piercingType}
+                onChange={handleFormChange}
               >
                 <option value="" disabled>What are we adorning?</option>
                 {PIERCING_OPTIONS.map((opt) => (
@@ -306,10 +318,11 @@ export const BookingSection: React.FC<BookingSectionProps> = ({
               <label htmlFor="notes">Message / Notes</label>
               <textarea
                 id="notes"
+                name="notes"
                 className="form-control"
                 placeholder="Any inspiration or questions?"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
+                value={form.notes}
+                onChange={handleFormChange}
               ></textarea>
             </div>
 
@@ -321,4 +334,4 @@ export const BookingSection: React.FC<BookingSectionProps> = ({
       </div>
     </section>
   );
-};
+}
